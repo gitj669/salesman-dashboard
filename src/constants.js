@@ -6,7 +6,7 @@ export const API_METHOD = {
 
 //const hostname = new URL(window.location).hostname;
 //export const API_BASE_URL = `https://${hostname}/api/`;
-export const API_BASE_URL = 'http://34.206.72.199:3010/api/'
+export const API_BASE_URL = 'http://54.160.141.173:3010/api/'
 
 export const API_URL = {
   SALES_CALL_BY_MONTH: `${API_BASE_URL}dashboard/salesCallByMonth/`,
@@ -18,7 +18,9 @@ export const API_URL = {
   S3_SALES_BREAKDOWN: `${API_BASE_URL}dashboard/s3SalesBreakdown/`,
   TOP_CONTACTS: `${API_BASE_URL}dashboard/topContacts/`,
   RECENT_ACTIVITY: `${API_BASE_URL}dashboard/recentActivity/`,
-  CUSTOMER: `${API_BASE_URL}/customer/customer/`
+  CUSTOMER: `${API_BASE_URL}/customer/customer/`,
+  ONE_CUSTOMER_INV_DETAIL: `${API_BASE_URL}dashboard/oneCustomerInvDetail/`,
+  SALES_BREAKDOWN_DETAIL: `${API_BASE_URL}dashboard/salesBreakdownDetail/`
 };
 
 export const API_NAMES = {

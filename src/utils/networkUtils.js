@@ -61,12 +61,25 @@ export const getOneCustomerInvData = async(id) => {
   return data;
 }
 
-export const getSalesBreakdownData = async(id) => {
+export const getSalesBreakdownData = async(id, year) => {
+  let data;
+  if (typeof(id) === 'number') {
+    let apiUrl = year ? `${API_URL.SALES_BREAKDOWN}${id}/${year}` : `${API_URL.SALES_BREAKDOWN}${id}`;
+    const reqDetails = {
+      method: API_METHOD.GET,
+      apiUrl
+    };
+    data = await FetchApiResponse(reqDetails);
+  }
+  return data;
+}
+
+export const getSalesBreakdownDetailData = async(id) => {
   let data;
   if (typeof(id) === 'number') {
     const reqDetails = {
       method: API_METHOD.GET,
-      apiUrl: `${API_URL.SALES_BREAKDOWN}${id}`
+      apiUrl: `${API_URL.SALES_BREAKDOWN_DETAIL}${id}`
     };
     data = await FetchApiResponse(reqDetails);
   }
@@ -115,6 +128,18 @@ export const getCustomerData = async(id) => {
     const reqDetails = {
       method: API_METHOD.GET,
       apiUrl: `${API_URL.CUSTOMER}${id}`
+    };
+    data = await FetchApiResponse(reqDetails);
+  }
+  return data;
+}
+
+export const getOneCustomerInvDetailData = async(id) => {
+  let data;
+  if (typeof(id) === 'number') {
+    const reqDetails = {
+      method: API_METHOD.GET,
+      apiUrl: `${API_URL.ONE_CUSTOMER_INV_DETAIL}${id}`
     };
     data = await FetchApiResponse(reqDetails);
   }

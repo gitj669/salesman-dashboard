@@ -12,7 +12,8 @@ import {
   getS3SalesBreakdownData,
   getTopContactsData,
   getRecentActivityData,
-  getCustomerData
+  getCustomerData,
+  getOneCustomerInvDetailData
 } from '../../utils/networkUtils';
 import {
   prepareDataForBarChart,
@@ -66,7 +67,8 @@ export default class Dashboard extends React.Component {
         getS3SalesBreakdownData(customerKey),
         getTopContactsData(customerKey),
         getRecentActivityData(customerKey),
-        getCustomerData(customerKey)
+        getCustomerData(customerKey),
+        getOneCustomerInvDetailData(customerKey)
       ]).then((values) => {
         this.setState({
           orderEntryData: prepareDataForBarChart(values[0], API_NAMES.orderEntry),
@@ -207,7 +209,7 @@ export default class Dashboard extends React.Component {
 
   render() {
     const { pageStatus, customerData, errorMsgs } = this.state;
-    const { CUSTOMER, NAME } = customerData || {};
+    const { NAME } = customerData || {};
     return (
       <>
         <Container>
