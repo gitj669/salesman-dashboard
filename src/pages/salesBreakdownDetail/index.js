@@ -13,7 +13,6 @@ import {
 import { getUrlParams } from '../../utils/commonUtils';
 import { API_NAMES, PAGE_STATUS } from '../../constants';
 import PieChart from '../../components/charts/pie';
-import './index.scss';
 import LoadingScreen from '../../components/loadingScreen';
 
 export default class SalesBreakdownDetail extends React.Component {

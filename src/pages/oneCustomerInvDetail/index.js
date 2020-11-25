@@ -7,7 +7,6 @@ import {
 } from '../../utils/networkUtils';
 import { getUrlParams } from '../../utils/commonUtils';
 import { PAGE_STATUS } from '../../constants';
-import './index.scss';
 import LoadingScreen from '../../components/loadingScreen';
 import { isEmpty } from 'lodash';
 
