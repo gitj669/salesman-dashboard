@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Navbar, Modal, Button } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 import cloneDeep from 'lodash/cloneDeep';
 import isPlainObject from 'lodash/isPlainObject';
 import {
@@ -35,6 +36,7 @@ import RecentActivity from './recentActivity';
 export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+    this.customerKey = 0;
     this.state = {
       salesByMonthData: null,
       salesCallByMonthData: null,
@@ -54,21 +56,21 @@ export default class Dashboard extends React.Component {
       pageStatus: PAGE_STATUS.LOADING
     });
     const params = getUrlParams(window.location.href);
-    let customerKey = params && params.customer_key;
-    customerKey = parseInt(customerKey);
-    if (customerKey) {
+    this.customerKey = params && params.customer_key;
+    this.customerKey = parseInt(this.customerKey);
+    if (this.customerKey) {
       Promise.all([
-        getOrderEntryData(customerKey),
-        getSalesCallByMonthData(customerKey),
-        getAnnualizedSalesData(customerKey),
-        getSalesByMonthData(customerKey),
-        getOneCustomerInvData(customerKey),
-        getSalesBreakdownData(customerKey),
-        getS3SalesBreakdownData(customerKey),
-        getTopContactsData(customerKey),
-        getRecentActivityData(customerKey),
-        getCustomerData(customerKey),
-        getOneCustomerInvDetailData(customerKey)
+        getOrderEntryData(this.customerKey),
+        getSalesCallByMonthData(this.customerKey),
+        getAnnualizedSalesData(this.customerKey),
+        getSalesByMonthData(this.customerKey),
+        getOneCustomerInvData(this.customerKey),
+        getSalesBreakdownData(this.customerKey),
+        getS3SalesBreakdownData(this.customerKey),
+        getTopContactsData(this.customerKey),
+        getRecentActivityData(this.customerKey),
+        getCustomerData(this.customerKey),
+        getOneCustomerInvDetailData(this.customerKey)
       ]).then((values) => {
         this.setState({
           orderEntryData: prepareDataForBarChart(values[0], API_NAMES.orderEntry),
@@ -147,19 +149,25 @@ export default class Dashboard extends React.Component {
               </Col> : null
             }
             {oneCustomerInvData ?
-              <Col md={6} className="chartWrapper">
-                <LineChart data={oneCustomerInvData} />
-              </Col> : null
+              <Link to={`/oneCustomerInvDetail?customer_key=${this.customerKey}`} target="_blank">
+                <Col md={6} className="chartWrapper">
+                  <LineChart data={oneCustomerInvData} />
+                </Col>
+              </Link> : null
             }
             {salesBreakdownData ?
-              <Col md={6} className="chartWrapper">
-                <PieChart data={salesBreakdownData} />
-              </Col> : null
+              <Link to={`/salesBreakdownDetail?customer_key=${this.customerKey}`} target="_blank">
+                <Col md={6} className="chartWrapper">
+                  <PieChart data={salesBreakdownData} />
+                </Col>
+              </Link> : null
             }
             {s3salesBreakdownData ?
-              <Col md={6} className="chartWrapper">
-                <PieChart data={s3salesBreakdownData} />
-              </Col> : null
+              <Link to={`/s3SalesBreakdownDetail?customer_key=${this.customerKey}`} target="_blank">
+                <Col md={6} className="chartWrapper">
+                  <PieChart data={s3salesBreakdownData} />
+                </Col>
+              </Link> : null
             }
           </Row>
         </Col>

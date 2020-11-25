@@ -20,7 +20,8 @@ export const API_URL = {
   RECENT_ACTIVITY: `${API_BASE_URL}dashboard/recentActivity/`,
   CUSTOMER: `${API_BASE_URL}/customer/customer/`,
   ONE_CUSTOMER_INV_DETAIL: `${API_BASE_URL}dashboard/oneCustomerInvDetail/`,
-  SALES_BREAKDOWN_DETAIL: `${API_BASE_URL}dashboard/salesBreakdownDetail/`
+  SALES_BREAKDOWN_DETAIL: `${API_BASE_URL}dashboard/salesBreakdownDetail/`,
+  S3_SALES_BREAKDOWN_DETAIL: `${API_BASE_URL}dashboard/s3SalesBreakdownDetail/`
 };
 
 export const API_NAMES = {

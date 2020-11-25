@@ -86,12 +86,25 @@ export const getSalesBreakdownDetailData = async(id) => {
   return data;
 }
 
-export const getS3SalesBreakdownData = async(id) => {
+export const getS3SalesBreakdownData = async(id, year) => {
+  let data;
+  if (typeof(id) === 'number') {
+    let apiUrl = year ? `${API_URL.S3_SALES_BREAKDOWN}${id}/${year}` : `${API_URL.S3_SALES_BREAKDOWN}${id}`;
+    const reqDetails = {
+      method: API_METHOD.GET,
+      apiUrl
+    };
+    data = await FetchApiResponse(reqDetails);
+  }
+  return data;
+}
+
+export const getS3SalesBreakdownDetailData = async(id) => {
   let data;
   if (typeof(id) === 'number') {
     const reqDetails = {
       method: API_METHOD.GET,
-      apiUrl: `${API_URL.S3_SALES_BREAKDOWN}${id}`
+      apiUrl: `${API_URL.S3_SALES_BREAKDOWN_DETAIL}${id}`
     };
     data = await FetchApiResponse(reqDetails);
   }
