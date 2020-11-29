@@ -40,6 +40,20 @@
   height: 400px;
 }
 
+.navbar {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.go-back-btn {
+  display: inline-block;
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: underline;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
 .highcharts-figure,
 .highcharts-data-table table {
   min-width: 310px;

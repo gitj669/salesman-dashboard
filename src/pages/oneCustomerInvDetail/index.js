@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Navbar, Modal, Button, Table } from 'react-bootstrap';
+import { useHistory } from "react-router-dom";
 import isPlainObject from 'lodash/isPlainObject';
 import {
   getOneCustomerInvDetailData,
@@ -10,60 +11,53 @@ import { PAGE_STATUS } from '../../constants';
 import LoadingScreen from '../../components/loadingScreen';
 import { isEmpty } from 'lodash';
 
-export default class OneCustomerInvDetail extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      oneCustomerInvData: null,
-      pageStatus: PAGE_STATUS.DEFAULT
-    };
-  }
+const OneCustomerInvDetail = (props) => {
+  const [oneCustomerInvData, setCustomerInvData] = useState(null);
+  const [pageStatus, setPageStatus] = useState(PAGE_STATUS.DEFAULT);
+  const [errorMsgs, setErrorMsgs] = useState();
+  const [customerData, setCustomerData] = useState();
+  let history = useHistory();
 
-  async componentDidMount() {
-    this.setState({
-      pageStatus: PAGE_STATUS.LOADING
-    });
-    const { customerId } = this.props;
-    let customerKey = customerId;
-    if (!customerKey) {
-      const params = getUrlParams(window.location.href);
-      customerKey = params && params.customer_key;
-      customerKey = parseInt(customerKey);
-    }
-    if (customerKey) {
-      Promise.all([
-        getOneCustomerInvDetailData(customerKey),
-        getCustomerData(customerKey)
-      ]).then((values) => {
-        this.setState({
-          oneCustomerInvData: values[0],
-          customerData: values[1],
-          errorMsgs: this.setErrorsMsgs(values),
-          pageStatus: PAGE_STATUS.SUCCESS
-        });
-      });
-    }
-  }
-
-  setErrorsMsgs = apiResponses => {
-    const errorMsgs = [];
+  const setErrorsMsgs = apiResponses => {
+    const updatedErrorMsgs = [];
     if (apiResponses && apiResponses.length) {
       apiResponses.forEach(res => {
         if (isPlainObject(res) && res.errorMsg) {
-          errorMsgs.push(<>
+          updatedErrorMsgs.push(<>
             <p>{`${res.sourceName}: ${res.errorLocation}`}</p>
             <p>{res.errorMsg}</p>
           </>);
         }
       });
     }
-    return errorMsgs;
+    return updatedErrorMsgs;
   }
 
-  renderSuccessScreen = () => {
-    const {
-      oneCustomerInvData
-    } = this.state;
+  useEffect(() => {
+    (async () => {
+      setPageStatus(PAGE_STATUS.LOADING);
+      const { customerId } = props;
+      let customerKey = customerId;
+      if (!customerKey) {
+        const params = getUrlParams(window.location.href);
+        customerKey = params && params.customer_key;
+        customerKey = parseInt(customerKey);
+      }
+      if (customerKey) {
+        Promise.all([
+          getOneCustomerInvDetailData(customerKey),
+          getCustomerData(customerKey)
+        ]).then((values) => {
+          setCustomerInvData(values[0]);
+          setCustomerData(values[1]);
+          setErrorMsgs(setErrorsMsgs(values));
+          setPageStatus(PAGE_STATUS.SUCCESS);
+        });
+      }
+    })();
+  }, []);
+
+  const renderSuccessScreen = () => {
     if (!oneCustomerInvData || isEmpty(oneCustomerInvData)) {
       return null;
     }
@@ -85,16 +79,15 @@ export default class OneCustomerInvDetail extends React.Component {
             <Table striped bordered hover className="top-contacts-table">
               <tbody>
                 {
-                  oneCustomerInvData.map((contact, index) =>
-                  {
+                  oneCustomerInvData.map((contact, index) => {
                     return (
-                    <tr key={index}>
-                      <td>{contact.ITEM_NUMBER || ''}</td>
-                      <td>{contact.DESCRIPTION || ''}</td>
-                      <td>{contact.ONHAND}</td>
-                      <td>{contact.ONE_CUST_WITH_REQ ? `$ ${contact.ONE_CUST_WITH_REQ}` : '$0'}</td>
-                      <td>{contact.ONE_CUST_TOTAL ? `$ ${contact.ONE_CUST_TOTAL}` : '$0'}</td>
-                    </tr>
+                      <tr key={index}>
+                        <td>{contact.ITEM_NUMBER || ''}</td>
+                        <td>{contact.DESCRIPTION || ''}</td>
+                        <td>{contact.ONHAND}</td>
+                        <td>{contact.ONE_CUST_WITH_REQ ? `$ ${contact.ONE_CUST_WITH_REQ}` : '$0'}</td>
+                        <td>{contact.ONE_CUST_TOTAL ? `$ ${contact.ONE_CUST_TOTAL}` : '$0'}</td>
+                      </tr>
                     )
                   }
                   )}
@@ -106,18 +99,11 @@ export default class OneCustomerInvDetail extends React.Component {
     )
   };
 
-  hideErrorModal = () => {
-    this.setState({
-      errorMsgs: null
-    });
-  }
-
-  renderErrorModal = () => {
-    const { errorMsgs } = this.state;
+  const renderErrorModal = () => {
     return (
       <Modal
         show={errorMsgs && errorMsgs.length}
-        onHide={this.hideErrorModal}
+        onHide={() => setErrorMsgs(null)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -127,26 +113,26 @@ export default class OneCustomerInvDetail extends React.Component {
           {errorMsgs.map(error => error)}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={this.hideErrorModal}>Close</Button>
+          <Button variant="primary" onClick={() => setErrorMsgs(null)}>Close</Button>
         </Modal.Footer>
       </Modal>
     )
   }
 
-  render() {
-    const { pageStatus, customerData, errorMsgs } = this.state;
-    const { NAME } = customerData || {};
-    return (
-      <>
-        <Container>
-          <Navbar>
-            <Navbar.Brand className="logo-text">{NAME || ''} Dashboard</Navbar.Brand>
-          </Navbar>
-          {pageStatus === PAGE_STATUS.SUCCESS && this.renderSuccessScreen()}
-          {pageStatus === PAGE_STATUS.LOADING && <LoadingScreen />}
-          {errorMsgs && errorMsgs.length ? this.renderErrorModal() : null}
-        </Container>
-      </>
-    );
-  }
+  const { NAME } = customerData || {};
+  return (
+    <>
+      <Container>
+        <Navbar>
+          <Navbar.Brand className="logo-text">{NAME || ''} Dashboard</Navbar.Brand>
+        </Navbar>
+        <span className="go-back-btn" onClick={() => history.goBack()}>Return to Dashboard Home</span>
+        {pageStatus === PAGE_STATUS.SUCCESS && renderSuccessScreen()}
+        {pageStatus === PAGE_STATUS.LOADING && <LoadingScreen />}
+        {errorMsgs && errorMsgs.length ? renderErrorModal() : null}
+      </Container>
+    </>
+  );
 }
+
+export default OneCustomerInvDetail;

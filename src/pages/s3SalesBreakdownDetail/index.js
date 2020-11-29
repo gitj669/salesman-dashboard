@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import { Container, Row, Col, Navbar, Modal, Button, Table } from 'react-bootstrap';
 import moment from 'moment';
 import isPlainObject from 'lodash/isPlainObject';
@@ -15,69 +16,60 @@ import { API_NAMES, PAGE_STATUS } from '../../constants';
 import PieChart from '../../components/charts/pie';
 import LoadingScreen from '../../components/loadingScreen';
 
-export default class S3SalesBreakdownDetail extends React.Component {
-  constructor(props) {
-    super(props);
-    this.currentYear = moment().year();
-    this.state = {
-      currentYearData: null,
-      previousYearData: null,
-      salesBreakdownDetail: null,
-      pageStatus: PAGE_STATUS.DEFAULT
-    };
-  }
+const S3SalesBreakdownDetail = (props) => {
+  const [currentYearData, setCurrentYearData] = useState(null);
+  const [previousYearData, setPreviousYearData] = useState(null);
+  const [salesBreakdownDetail, setSalesBreakdownDetail] = useState(null);
+  const [customerData, setCustomerData] = useState(null);
+  const [pageStatus, setPageStatus] = useState(PAGE_STATUS.DEFAULT);
+  const [errorMsgs, setErrorMsgs] = useState(null);
+  let currentYear = moment().year();
+  let history = useHistory();
 
-  async componentDidMount() {
-    this.setState({
-      pageStatus: PAGE_STATUS.LOADING
-    });
-    const { customerId } = this.props;
-    let customerKey = customerId;
-    if (!customerKey) {
-      const params = getUrlParams(window.location.href);
-      customerKey = params && params.customer_key;
-      customerKey = parseInt(customerKey);
-    }
-    if (customerKey) {
-      Promise.all([
-        getS3SalesBreakdownData(customerKey),
-        getS3SalesBreakdownData(customerKey, (this.currentYear - 1)),
-        getS3SalesBreakdownDetailData(customerKey),
-        getCustomerData(customerKey)
-      ]).then((values) => {
-        this.setState({
-          currentYearData: prepareDataForPieChart(values[0], API_NAMES.salesBreakDown),
-          previousYearData: prepareDataForPieChart(values[1], API_NAMES.salesBreakDown),
-          salesBreakdownDetail: values[2],
-          customerData: values[3],
-          errorMsgs: this.setErrorsMsgs(values),
-          pageStatus: PAGE_STATUS.SUCCESS
-        });
-      });
-    }
-  }
-
-  setErrorsMsgs = apiResponses => {
-    const errorMsgs = [];
+  const setErrorsMsgs = apiResponses => {
+    const updatedErrorMsgs = [];
     if (apiResponses && apiResponses.length) {
       apiResponses.forEach(res => {
         if (isPlainObject(res) && res.errorMsg) {
-          errorMsgs.push(<>
+          updatedErrorMsgs.push(<>
             <p>{`${res.sourceName}: ${res.errorLocation}`}</p>
             <p>{res.errorMsg}</p>
           </>);
         }
       });
     }
-    return errorMsgs;
+    return updatedErrorMsgs;
   }
 
-  renderSuccessScreen = () => {
-    const {
-      currentYearData,
-      previousYearData,
-      salesBreakdownDetail
-    } = this.state;
+  useEffect(() => {
+    (async () => {
+      setPageStatus(PAGE_STATUS.LOADING);
+      const { customerId } = props;
+      let customerKey = customerId;
+      if (!customerKey) {
+        const params = getUrlParams(window.location.href);
+        customerKey = params && params.customer_key;
+        customerKey = parseInt(customerKey);
+      }
+      if (customerKey) {
+        Promise.all([
+          getS3SalesBreakdownData(customerKey),
+          getS3SalesBreakdownData(customerKey, (currentYear - 1)),
+          getS3SalesBreakdownDetailData(customerKey),
+          getCustomerData(customerKey)
+        ]).then((values) => {
+          setCurrentYearData(prepareDataForPieChart(values[0], API_NAMES.salesBreakDown));
+          setPreviousYearData(prepareDataForPieChart(values[1], API_NAMES.salesBreakDown));
+          setSalesBreakdownDetail(values[2]);
+          setCustomerData(values[3]);
+          setErrorMsgs(setErrorsMsgs(values));
+          setPageStatus(PAGE_STATUS.SUCCESS);
+        });
+      }
+    })();
+  }, []);
+
+  const renderSuccessScreen = () => {
     return (
       <Row>
         <Col md={12} className="chartWrapper">
@@ -98,9 +90,9 @@ export default class S3SalesBreakdownDetail extends React.Component {
                   <thead>
                     <tr>
                       <th>Product Group</th>
-                      <th>{this.currentYear - 1} Sales</th>
-                      <th>{this.currentYear} Sales</th>
-                      <th>{this.currentYear} Sales Annual</th>
+                      <th>{currentYear - 1} Sales</th>
+                      <th>{currentYear} Sales</th>
+                      <th>{currentYear} Sales Annual</th>
                     </tr>
                   </thead>
                 </Table>
@@ -114,7 +106,7 @@ export default class S3SalesBreakdownDetail extends React.Component {
                               <td>{contact.SALES_GROUP || ''}</td>
                               <td>{contact.PREVYR_SALES || 0}</td>
                               <td>{contact.CURRYRSALES || 0}</td>
-                              <td>{contact.CURRYR_ANNUALIZED|| 0}</td>
+                              <td>{contact.CURRYR_ANNUALIZED || 0}</td>
                             </tr>
                           )
                         }
@@ -130,18 +122,11 @@ export default class S3SalesBreakdownDetail extends React.Component {
     )
   };
 
-  hideErrorModal = () => {
-    this.setState({
-      errorMsgs: null
-    });
-  }
-
-  renderErrorModal = () => {
-    const { errorMsgs } = this.state;
+  const renderErrorModal = () => {
     return (
       <Modal
         show={errorMsgs && errorMsgs.length}
-        onHide={this.hideErrorModal}
+        onHide={() => setErrorMsgs(null)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -151,26 +136,26 @@ export default class S3SalesBreakdownDetail extends React.Component {
           {errorMsgs.map(error => error)}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={this.hideErrorModal}>Close</Button>
+          <Button variant="primary" onClick={() => setErrorMsgs(null)}>Close</Button>
         </Modal.Footer>
       </Modal>
     )
   }
 
-  render() {
-    const { pageStatus, customerData, errorMsgs } = this.state;
-    const { NAME } = customerData || {};
-    return (
-      <>
-        <Container>
-          <Navbar>
-            <Navbar.Brand className="logo-text">{NAME || ''} Dashboard</Navbar.Brand>
-          </Navbar>
-          {pageStatus === PAGE_STATUS.SUCCESS && this.renderSuccessScreen()}
-          {pageStatus === PAGE_STATUS.LOADING && <LoadingScreen />}
-          {errorMsgs && errorMsgs.length ? this.renderErrorModal() : null}
-        </Container>
-      </>
-    );
-  }
+  const { NAME } = customerData || {};
+  return (
+    <>
+      <Container>
+        <Navbar>
+          <Navbar.Brand className="logo-text">{NAME || ''} Dashboard</Navbar.Brand>
+        </Navbar>
+        <span className="go-back-btn" onClick={() => history.goBack()}>Return to Dashboard Home</span>
+        {pageStatus === PAGE_STATUS.SUCCESS && renderSuccessScreen()}
+        {pageStatus === PAGE_STATUS.LOADING && <LoadingScreen />}
+        {errorMsgs && errorMsgs.length ? renderErrorModal() : null}
+      </Container>
+    </>
+  );
 }
+
+export default S3SalesBreakdownDetail;
