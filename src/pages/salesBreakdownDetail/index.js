@@ -74,14 +74,14 @@ const SalesBreakdownDetail = (props) => {
       <Row>
         <Col md={12} className="chartWrapper">
           <Row>
-            {currentYearData ?
-              <Col md={6} className="chartWrapper">
-                <PieChart data={currentYearData} />
-              </Col> : null
-            }
             {previousYearData ?
               <Col md={6} className="chartWrapper">
                 <PieChart data={previousYearData} />
+              </Col> : null
+            }
+            {currentYearData ?
+              <Col md={6} className="chartWrapper">
+                <PieChart data={currentYearData} />
               </Col> : null
             }
             {salesBreakdownDetail && salesBreakdownDetail.length ?

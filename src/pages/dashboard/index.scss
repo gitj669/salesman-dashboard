@@ -46,6 +46,9 @@
 .recent-activities .top-contacts-table {
   border: solid 1px #000000;
 }
+.top-contacts-table.table-hover tbody tr:hover {
+  background-color: #a9a9a9;
+}
 .top-contacts-table td,
 .top-contacts-table th {
   font-size: 12px;
