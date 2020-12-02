@@ -53,7 +53,7 @@ const SalesBreakdownDetail = (props) => {
       }
       if (customerKey) {
         Promise.all([
-          getSalesBreakdownData(customerKey),
+          getSalesBreakdownData(customerKey, currentYear),
           getSalesBreakdownData(customerKey, (currentYear - 1)),
           getSalesBreakdownDetailData(customerKey),
           getCustomerData(customerKey)
