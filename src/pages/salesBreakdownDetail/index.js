@@ -84,6 +84,7 @@ const SalesBreakdownDetail = (props) => {
                 <PieChart data={currentYearData} />
               </Col> : null
             }
+            <Col md={12}></Col>
             {salesBreakdownDetail && salesBreakdownDetail.length ?
               <Col md={6}>
                 <Table striped bordered hover className="top-contacts-table">

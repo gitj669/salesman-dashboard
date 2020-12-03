@@ -2,7 +2,7 @@
   "name": "seller-panel",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
+  "homepage": "http://54.160.141.173/lhome/apps/dashboard",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
