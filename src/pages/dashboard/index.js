@@ -150,21 +150,21 @@ export default class Dashboard extends React.Component {
               </Col> : null
             }
             {oneCustomerInvData ?
-              <Link to={`${BASE_PATH}/oneCustomerInvDetail?customer_key=${this.customerKey}`}>
+              <Link to={`/oneCustomerInvDetail?customer_key=${this.customerKey}`}>
                 <Col md={6} className="chartWrapper">
                   <LineChart data={oneCustomerInvData} />
                 </Col>
               </Link> : null
             }
             {salesBreakdownData ?
-              <Link to={`${BASE_PATH}/salesBreakdownDetail?customer_key=${this.customerKey}`}>
+              <Link to={`/salesBreakdownDetail?customer_key=${this.customerKey}`}>
                 <Col md={6} className="chartWrapper">
                   <PieChart data={salesBreakdownData} />
                 </Col>
               </Link> : null
             }
             {s3salesBreakdownData ?
-              <Link to={`${BASE_PATH}/s3SalesBreakdownDetail?customer_key=${this.customerKey}`}>
+              <Link to={`/s3SalesBreakdownDetail?customer_key=${this.customerKey}`}>
                 <Col md={6} className="chartWrapper">
                   <PieChart data={s3salesBreakdownData} />
                 </Col>

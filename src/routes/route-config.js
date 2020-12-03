@@ -5,36 +5,34 @@ import SalesBreakdownDetail from '../pages/salesBreakdownDetail';
 import S3SalesBreakdownDetail from '../pages/s3SalesBreakdownDetail';
 import '../App.css';
 
-export const BASE_PATH = '/lhome/apps';
-
 export const Routes = [
   {
     component: Dashboard,
-    path: `${BASE_PATH}/dashboard`,
+    path: `/dashboard`,
     exact: true,
     title: 'Salesman Dashboard'
   },
   {
     component: Dashboard,
-    path: `${BASE_PATH}/`,
+    path: `/`,
     exact: true,
     title: 'Salesman Dashboard'
   },
   {
     component: OneCustomerInvDetail,
-    path: `${BASE_PATH}/oneCustomerInvDetail`,
+    path: `/oneCustomerInvDetail`,
     exact: true,
     title: 'Salesman Dashboard'
   },
   {
     component: SalesBreakdownDetail,
-    path: `${BASE_PATH}/salesBreakdownDetail`,
+    path: `/salesBreakdownDetail`,
     exact: true,
     title: 'Salesman Dashboard'
   },
   {
     component: S3SalesBreakdownDetail,
-    path: `${BASE_PATH}/s3SalesBreakdownDetail`,
+    path: `/s3SalesBreakdownDetail`,
     exact: true,
     title: 'Salesman Dashboard'
   }
