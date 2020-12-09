@@ -30,6 +30,12 @@
   display: inline-block;
   margin-right: 5px;
 } */
+.one-cust-detail {
+  max-height: 700px;
+  overflow: auto;
+  border-bottom: none;
+  scrollbar-width: none;
+}
 .top-contacts {
   max-height: 300px;
   overflow: auto;
@@ -42,6 +48,9 @@
   border: 1px solid #000000;
   border-top: none;
   border-bottom: none;
+  &.footer {
+    border-bottom: 1px solid #000000;
+  }
 }
 .recent-activities .top-contacts-table {
   border: solid 1px #000000;

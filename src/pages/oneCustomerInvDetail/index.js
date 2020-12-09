@@ -6,7 +6,7 @@ import {
   getOneCustomerInvDetailData,
   getCustomerData
 } from '../../utils/networkUtils';
-import { getUrlParams } from '../../utils/commonUtils';
+import { getUrlParams, sumOfKeyInArrObj, formatAsDollar } from '../../utils/commonUtils';
 import { PAGE_STATUS } from '../../constants';
 import LoadingScreen from '../../components/loadingScreen';
 import { isEmpty } from 'lodash';
@@ -64,6 +64,7 @@ const OneCustomerInvDetail = (props) => {
     return (
       <Row>
         <Col md={12}>
+          <h4 className="heading1">One Customer Inventory</h4>
           <Table striped bordered hover className="top-contacts-table">
             <thead>
               <tr>
@@ -75,7 +76,7 @@ const OneCustomerInvDetail = (props) => {
               </tr>
             </thead>
           </Table>
-          <div className="top-contacts">
+          <div className="one-cust-detail">
             <Table striped bordered hover className="top-contacts-table">
               <tbody>
                 {
@@ -85,8 +86,8 @@ const OneCustomerInvDetail = (props) => {
                         <td>{contact.ITEM_NUMBER || ''}</td>
                         <td>{contact.DESCRIPTION || ''}</td>
                         <td>{contact.ONHAND}</td>
-                        <td>{contact.ONE_CUST_WITH_REQ ? `$ ${contact.ONE_CUST_WITH_REQ}` : '$0'}</td>
-                        <td>{contact.ONE_CUST_TOTAL ? `$ ${contact.ONE_CUST_TOTAL}` : '$0'}</td>
+                        <td>{contact.ONE_CUST_WITH_REQ ? `$ ${formatAsDollar(contact.ONE_CUST_WITH_REQ)}` : '$ 0'}</td>
+                        <td>{contact.ONE_CUST_TOTAL ? `$ ${formatAsDollar(contact.ONE_CUST_TOTAL)}` : '$ 0'}</td>
                       </tr>
                     )
                   }
@@ -94,6 +95,15 @@ const OneCustomerInvDetail = (props) => {
               </tbody>
             </Table>
           </div>
+          <Table striped bordered hover className="top-contacts-table footer">
+            <thead>
+              <tr>
+                <th colSpan={3}>TOTAL</th>
+                <th>$ {formatAsDollar(sumOfKeyInArrObj(oneCustomerInvData, 'ONE_CUST_WITH_REQ'))}</th>
+                <th>$ {formatAsDollar(sumOfKeyInArrObj(oneCustomerInvData, 'ONE_CUST_TOTAL'))}</th>
+              </tr>
+            </thead>
+          </Table>
         </Col>
       </Row>
     )
@@ -126,7 +136,7 @@ const OneCustomerInvDetail = (props) => {
         <Navbar>
           <Navbar.Brand className="logo-text">{NAME || ''} Dashboard</Navbar.Brand>
         </Navbar>
-        <span className="go-back-btn" onClick={() => history.goBack()}>Return to Dashboard Home</span>
+        <span className="go-back-btn" onClick={() => history.goBack()}>Return to Salesman Dashboard</span>
         {pageStatus === PAGE_STATUS.SUCCESS && renderSuccessScreen()}
         {pageStatus === PAGE_STATUS.LOADING && <LoadingScreen />}
         {errorMsgs && errorMsgs.length ? renderErrorModal() : null}

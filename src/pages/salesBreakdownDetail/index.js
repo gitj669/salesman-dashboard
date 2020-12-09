@@ -11,7 +11,7 @@ import {
 import {
   prepareDataForPieChart
 } from '../../utils/chartUtils';
-import { getUrlParams } from '../../utils/commonUtils';
+import { getUrlParams, formatAsDollar, sumOfKeyInArrObj } from '../../utils/commonUtils';
 import { API_NAMES, PAGE_STATUS } from '../../constants';
 import PieChart from '../../components/charts/pie';
 import LoadingScreen from '../../components/loadingScreen';
@@ -97,7 +97,7 @@ const SalesBreakdownDetail = (props) => {
                     </tr>
                   </thead>
                 </Table>
-                <div className="top-contacts">
+                <div className="one-cust-detail">
                   <Table striped bordered hover className="top-contacts-table">
                     <tbody>
                       {
@@ -105,9 +105,9 @@ const SalesBreakdownDetail = (props) => {
                           return (
                             <tr key={index}>
                               <td>{contact.SALES_GROUP || ''}</td>
-                              <td>{contact.PREVYR_SALES || 0}</td>
-                              <td>{contact.CURRYRSALES || 0}</td>
-                              <td>{contact.CURRYR_ANNUALIZED || 0}</td>
+                              <td>{formatAsDollar(contact.PREVYR_SALES || 0)}</td>
+                              <td>{formatAsDollar(contact.CURRYRSALES || 0)}</td>
+                              <td>{formatAsDollar(contact.CURRYR_ANNUALIZED || 0)}</td>
                             </tr>
                           )
                         }
@@ -115,6 +115,16 @@ const SalesBreakdownDetail = (props) => {
                     </tbody>
                   </Table>
                 </div>
+                <Table striped bordered hover className="top-contacts-table footer">
+                  <thead>
+                    <tr>
+                      <th>TOTAL</th>
+                      <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'PREVYR_SALES'))}</th>
+                      <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'CURRYRSALES'))}</th>
+                      <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'CURRYR_ANNUALIZED'))}</th>
+                    </tr>
+                  </thead>
+                </Table>
               </Col> : null
             }
           </Row>
@@ -151,7 +161,7 @@ const SalesBreakdownDetail = (props) => {
         <Navbar>
           <Navbar.Brand className="logo-text">{NAME || ''} Dashboard</Navbar.Brand>
         </Navbar>
-        <span className="go-back-btn" onClick={() => history.goBack()}>Return to Dashboard Home</span>
+        <span className="go-back-btn" onClick={() => history.goBack()}>Return to Salesman Dashboard</span>
         {pageStatus === PAGE_STATUS.SUCCESS && renderSuccessScreen()}
         {pageStatus === PAGE_STATUS.LOADING && <LoadingScreen />}
         {errorMsgs && errorMsgs.length ? renderErrorModal() : null}
