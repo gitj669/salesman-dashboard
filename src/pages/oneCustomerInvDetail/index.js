@@ -98,7 +98,7 @@ const OneCustomerInvDetail = (props) => {
           <Table striped bordered hover className="top-contacts-table footer">
             <thead>
               <tr>
-                <th colSpan={3}>TOTAL</th>
+                <th colSpan={3}>Total</th>
                 <th>$ {formatAsDollar(sumOfKeyInArrObj(oneCustomerInvData, 'ONE_CUST_WITH_REQ'))}</th>
                 <th>$ {formatAsDollar(sumOfKeyInArrObj(oneCustomerInvData, 'ONE_CUST_TOTAL'))}</th>
               </tr>

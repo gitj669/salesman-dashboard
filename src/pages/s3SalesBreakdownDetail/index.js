@@ -118,7 +118,7 @@ const S3SalesBreakdownDetail = (props) => {
                 <Table striped bordered hover className="top-contacts-table footer">
                   <thead>
                     <tr>
-                      <th>TOTAL</th>
+                      <th>Total</th>
                       <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'PREVYR_SALES'))}</th>
                       <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'CURRYRSALES'))}</th>
                       <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'CURRYR_ANNUALIZED'))}</th>
