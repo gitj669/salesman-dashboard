@@ -1,22 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Navbar, Modal, Button, Table } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
+import { Container, Row, Col, Navbar, Modal, Button, Table } from 'react-bootstrap';
+import { AgGridColumn, AgGridReact } from 'ag-grid-react';
+import moment from 'moment';
 import isPlainObject from 'lodash/isPlainObject';
 import {
-  getOneCustomerInvDetailData,
-  getCustomerData
+  getCustomerData,
+  getSalesByMonthDetailData
 } from '../../utils/networkUtils';
-import { getUrlParams, sumOfKeyInArrObj, formatAsDollar } from '../../utils/commonUtils';
+import { getUrlParams, formatAsDollar, capitalizeFirstLetter } from '../../utils/commonUtils';
 import { PAGE_STATUS } from '../../constants';
 import LoadingScreen from '../../components/loadingScreen';
-import { isEmpty } from 'lodash';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 
-const OneCustomerInvDetail = (props) => {
-  const [oneCustomerInvData, setCustomerInvData] = useState(null);
+const SalesByMonthDetail = (props) => {
+  const [salesDetail, setSalesDetail] = useState(null);
+  const [customerData, setCustomerData] = useState(null);
   const [pageStatus, setPageStatus] = useState(PAGE_STATUS.DEFAULT);
-  const [errorMsgs, setErrorMsgs] = useState();
-  const [customerData, setCustomerData] = useState();
+  const [errorMsgs, setErrorMsgs] = useState(null);
+  let currentYear = moment().year();
   let history = useHistory();
+
+  let gridApi = null;
+  let gridColumnApi = null;
+
+  const onGridReady = (params) => {
+    gridApi = params.api;
+    gridColumnApi = params.columnApi;
+  }
 
   const setErrorsMsgs = apiResponses => {
     const updatedErrorMsgs = [];
@@ -45,10 +57,10 @@ const OneCustomerInvDetail = (props) => {
       }
       if (customerKey) {
         Promise.all([
-          getOneCustomerInvDetailData(customerKey),
+          getSalesByMonthDetailData(customerKey),
           getCustomerData(customerKey)
         ]).then((values) => {
-          setCustomerInvData(values[0]);
+          setSalesDetail(values[0]);
           setCustomerData(values[1]);
           setErrorMsgs(setErrorsMsgs(values));
           setPageStatus(PAGE_STATUS.SUCCESS);
@@ -58,52 +70,32 @@ const OneCustomerInvDetail = (props) => {
   }, []);
 
   const renderSuccessScreen = () => {
-    if (!oneCustomerInvData || isEmpty(oneCustomerInvData)) {
-      return null;
-    }
+    const months = moment.monthsShort();
+    const uppercaseMonths = months.map(month => month.toUpperCase());
     return (
       <Row>
-        <Col md={12}>
-          <h2 className="heading2">One Customer Inventory</h2>
-          <Table striped bordered hover className="top-contacts-table top-contacts-table1">
-            <thead>
-              <tr>
-                <th>Item Number</th>
-                <th>Item Description</th>
-                <th>Onhand</th>
-                <th>$ w/ Requirements</th>
-                <th>$ One Customer Inv</th>
-              </tr>
-            </thead>
-          </Table>
-          <div className="one-cust-detail">
-            <Table striped bordered hover className="top-contacts-table">
-              <tbody>
-                {
-                  oneCustomerInvData.map((contact, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>{contact.ITEM_NUMBER || ''}</td>
-                        <td>{contact.DESCRIPTION || ''}</td>
-                        <td>{contact.ONHAND}</td>
-                        <td>{contact.ONE_CUST_WITH_REQ ? `${formatAsDollar(contact.ONE_CUST_WITH_REQ)}` : '0'}</td>
-                        <td>{contact.ONE_CUST_TOTAL ? `${formatAsDollar(contact.ONE_CUST_TOTAL)}` : '0'}</td>
-                      </tr>
-                    )
-                  }
+        <Col md={12} className="chartWrapper">
+          <Row>
+            {salesDetail && salesDetail.length ?
+              <Col md={12} className="ag-theme-balham">
+                <h5 className="text-center">{currentYear} Sales by Month</h5>
+                <AgGridReact
+                  onGridReady={onGridReady}
+                  domLayout='autoHeight'
+                  rowData={salesDetail}>
+                  <AgGridColumn field="SALES_GROUP" headerName="Group"></AgGridColumn>
+                  {uppercaseMonths.map(month =>
+                    <AgGridColumn
+                      flex={1}
+                      field={month}
+                      headerName={capitalizeFirstLetter(month)}
+                      valueFormatter={item => formatAsDollar(item.value || 0)}
+                    />
                   )}
-              </tbody>
-            </Table>
-          </div>
-          <Table striped bordered hover className="top-contacts-table top-contacts-tablef footer">
-            <thead>
-              <tr>
-                <th colSpan={3}><span style={{color: "#595959"}}>Total</span></th>
-                <th>{formatAsDollar(sumOfKeyInArrObj(oneCustomerInvData, 'ONE_CUST_WITH_REQ'))}</th>
-                <th>{formatAsDollar(sumOfKeyInArrObj(oneCustomerInvData, 'ONE_CUST_TOTAL'))}</th>
-              </tr>
-            </thead>
-          </Table>
+                </AgGridReact>
+              </Col> : null
+            }
+          </Row>
         </Col>
       </Row>
     )
@@ -145,4 +137,4 @@ const OneCustomerInvDetail = (props) => {
   );
 }
 
-export default OneCustomerInvDetail;
+export default SalesByMonthDetail;

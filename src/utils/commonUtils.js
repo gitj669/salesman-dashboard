@@ -19,3 +19,8 @@ export const getUrlParams = function (url) {
 export const sumOfKeyInArrObj = (items, prop) => items.reduce((a, b) => a + b[prop], 0);
 
 export const formatAsDollar = number => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+export const capitalizeFirstLetter = (string) => {
+  const str = string.toLowerCase();
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

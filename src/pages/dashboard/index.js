@@ -22,7 +22,7 @@ import {
   prepareDataForLineChart,
   prepareDataForPieChart
 } from '../../utils/chartUtils';
-import {BASE_PATH} from '../../routes/route-config';
+import { BASE_PATH } from '../../routes/route-config';
 import { getUrlParams } from '../../utils/commonUtils';
 import { API_NAMES, PAGE_STATUS } from '../../constants';
 import BarChart from '../../components/charts/bar';
@@ -145,9 +145,11 @@ export default class Dashboard extends React.Component {
               </Col> : null
             }
             {salesByMonthData ?
-              <Col md={6} className="chartWrapper">
-                <LineChart data={salesByMonthData} />
-              </Col> : null
+              <Link to={`/salesByMonthDetail?customer_key=${this.customerKey}`}>
+                <Col md={6} className="chartWrapper">
+                  <LineChart data={salesByMonthData} />
+                </Col>
+              </Link> : null
             }
             {oneCustomerInvData ?
               <Link to={`/oneCustomerInvDetail?customer_key=${this.customerKey}`}>

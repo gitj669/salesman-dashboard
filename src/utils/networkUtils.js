@@ -111,6 +111,18 @@ export const getS3SalesBreakdownDetailData = async(id) => {
   return data;
 }
 
+export const getSalesByMonthDetailData = async(id) => {
+  let data;
+  if (typeof(id) === 'number') {
+    const reqDetails = {
+      method: API_METHOD.GET,
+      apiUrl: `${API_URL.SALES_BY_MONTH_DETAIL}${id}`
+    };
+    data = await FetchApiResponse(reqDetails);
+  }
+  return data;
+}
+
 export const getTopContactsData = async(id) => {
   let data;
   if (typeof(id) === 'number') {

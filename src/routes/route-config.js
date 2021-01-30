@@ -3,6 +3,7 @@ import Dashboard from '../pages/dashboard';
 import OneCustomerInvDetail from '../pages/oneCustomerInvDetail';
 import SalesBreakdownDetail from '../pages/salesBreakdownDetail';
 import S3SalesBreakdownDetail from '../pages/s3SalesBreakdownDetail';
+import SalesByMonthDetail from '../pages/salesByMonthDetail';
 import '../App.css';
 
 export const Routes = [
@@ -35,5 +36,11 @@ export const Routes = [
     path: `/s3SalesBreakdownDetail`,
     exact: true,
     title: 'Salesman Dashboard'
-  }
+  },
+  {
+    component: SalesByMonthDetail,
+    path: `/salesByMonthDetail`,
+    exact: true,
+    title: 'Salesman Dashboard'
+  },
 ];

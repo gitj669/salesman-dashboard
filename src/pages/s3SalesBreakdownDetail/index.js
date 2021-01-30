@@ -87,7 +87,7 @@ const S3SalesBreakdownDetail = (props) => {
             <Col md={12}></Col>
             {salesBreakdownDetail && salesBreakdownDetail.length ?
               <Col md={6}>
-                <Table striped bordered hover className="top-contacts-table">
+                <Table striped bordered hover className="top-contacts-table top-contacts-table1">
                   <thead>
                     <tr>
                       <th>Product Group</th>
@@ -115,10 +115,10 @@ const S3SalesBreakdownDetail = (props) => {
                     </tbody>
                   </Table>
                 </div>
-                <Table striped bordered hover className="top-contacts-table footer">
+                <Table striped bordered hover className="top-contacts-table footer top-contacts-tablef">
                   <thead>
                     <tr>
-                      <th>Total</th>
+                      <th><span style={{color: "#595959"}}>Total</span></th>
                       <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'PREVYR_SALES'))}</th>
                       <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'CURRYRSALES'))}</th>
                       <th>{formatAsDollar(sumOfKeyInArrObj(salesBreakdownDetail, 'CURRYR_ANNUALIZED'))}</th>

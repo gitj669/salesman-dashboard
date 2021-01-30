@@ -21,7 +21,8 @@ export const API_URL = {
   CUSTOMER: `${API_BASE_URL}/customer/customer/`,
   ONE_CUSTOMER_INV_DETAIL: `${API_BASE_URL}dashboard/oneCustomerInvDetail/`,
   SALES_BREAKDOWN_DETAIL: `${API_BASE_URL}dashboard/salesBreakdownDetail/`,
-  S3_SALES_BREAKDOWN_DETAIL: `${API_BASE_URL}dashboard/s3SalesBreakdownDetail/`
+  S3_SALES_BREAKDOWN_DETAIL: `${API_BASE_URL}dashboard/s3SalesBreakdownDetail/`,
+  SALES_BY_MONTH_DETAIL: `${API_BASE_URL}dashboard/salesByMonthDetails/`
 };
 
 export const API_NAMES = {
