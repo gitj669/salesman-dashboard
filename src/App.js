@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import './App.css';
+import './App.scss';
 import { Routes, Router } from './routes';
 
 const App = () => {

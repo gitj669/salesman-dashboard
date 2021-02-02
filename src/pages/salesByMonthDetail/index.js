@@ -12,7 +12,7 @@ import { getUrlParams, formatAsDollar, capitalizeFirstLetter } from '../../utils
 import { PAGE_STATUS } from '../../constants';
 import LoadingScreen from '../../components/loadingScreen';
 import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 const SalesByMonthDetail = (props) => {
   const [salesDetail, setSalesDetail] = useState(null);
@@ -21,6 +21,11 @@ const SalesByMonthDetail = (props) => {
   const [errorMsgs, setErrorMsgs] = useState(null);
   let currentYear = moment().year();
   let history = useHistory();
+  const defaultColDef = {
+    sortable: true,
+    filter: true,
+    resizable: true
+  };
 
   let gridApi = null;
   let gridColumnApi = null;
@@ -77,64 +82,66 @@ const SalesByMonthDetail = (props) => {
         <Col md={12} className="chartWrapper">
           <Row>
             {salesDetail && salesDetail.length ?
-              <Col md={12} className="ag-theme-balham">
+              <Col md={12} className="ag-theme-alpine">
                 <h5 className="text-center">{currentYear} Sales by Month</h5>
                 <AgGridReact
                   onGridReady={onGridReady}
                   domLayout='autoHeight'
-                  rowData={salesDetail}>
-                  <AgGridColumn field="SALES_GROUP" headerName="Group"></AgGridColumn>
-                  {uppercaseMonths.map(month =>
-                    <AgGridColumn
-                      flex={1}
-                      field={month}
-                      headerName={capitalizeFirstLetter(month)}
-                      valueFormatter={item => formatAsDollar(item.value || 0)}
-                    />
-                  )}
+                  rowData={salesDetail}
+                  defaultColDef={defaultColDef}
+                  >
+                  <AgGridColumn width={140} field="SALES_GROUP" headerName="Group"></AgGridColumn>
+                {uppercaseMonths.map(month =>
+                  <AgGridColumn
+                    flex={1}
+                    field={month}
+                    headerName={capitalizeFirstLetter(month)}
+                    valueFormatter={item => formatAsDollar(item.value || 0)}
+                  />
+                )}
                 </AgGridReact>
               </Col> : null
             }
           </Row>
         </Col>
-      </Row>
+      </Row >
     )
   };
 
-  const renderErrorModal = () => {
-    return (
-      <Modal
-        show={errorMsgs && errorMsgs.length}
-        onHide={() => setErrorMsgs(null)}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Body>
-          <p>Please email the error message below to DMS and wait to hear back from them before trying to use the page again</p>
-          {errorMsgs.map(error => error)}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={() => setErrorMsgs(null)}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-    )
-  }
-
-  const { NAME } = customerData || {};
+const renderErrorModal = () => {
   return (
-    <>
-      <Container>
-        <Navbar>
-          <Navbar.Brand className="logo-text">{NAME || ''} Dashboard</Navbar.Brand>
-        </Navbar>
-        <span className="go-back-btn" onClick={() => history.goBack()}>Return to Salesman Dashboard</span>
-        {pageStatus === PAGE_STATUS.SUCCESS && renderSuccessScreen()}
-        {pageStatus === PAGE_STATUS.LOADING && <LoadingScreen />}
-        {errorMsgs && errorMsgs.length ? renderErrorModal() : null}
-      </Container>
-    </>
-  );
+    <Modal
+      show={errorMsgs && errorMsgs.length}
+      onHide={() => setErrorMsgs(null)}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Body>
+        <p>Please email the error message below to DMS and wait to hear back from them before trying to use the page again</p>
+        {errorMsgs.map(error => error)}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="primary" onClick={() => setErrorMsgs(null)}>Close</Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
+
+const { NAME } = customerData || {};
+return (
+  <>
+    <Container>
+      <Navbar>
+        <Navbar.Brand className="logo-text">{NAME || ''} Dashboard</Navbar.Brand>
+      </Navbar>
+      <span className="go-back-btn" onClick={() => history.goBack()}>Return to Salesman Dashboard</span>
+      {pageStatus === PAGE_STATUS.SUCCESS && renderSuccessScreen()}
+      {pageStatus === PAGE_STATUS.LOADING && <LoadingScreen />}
+      {errorMsgs && errorMsgs.length ? renderErrorModal() : null}
+    </Container>
+  </>
+);
 }
 
 export default SalesByMonthDetail;

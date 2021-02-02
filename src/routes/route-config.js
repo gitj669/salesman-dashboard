@@ -4,7 +4,7 @@ import OneCustomerInvDetail from '../pages/oneCustomerInvDetail';
 import SalesBreakdownDetail from '../pages/salesBreakdownDetail';
 import S3SalesBreakdownDetail from '../pages/s3SalesBreakdownDetail';
 import SalesByMonthDetail from '../pages/salesByMonthDetail';
-import '../App.css';
+import '../App.scss';
 
 export const Routes = [
   {
