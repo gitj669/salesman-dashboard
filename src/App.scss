@@ -149,3 +149,7 @@
 .ag-theme-alpine .ag-rtl .ag-pinned-left-header .ag-header-row:before {
   background-color: unset !important;
 }
+.ag-row-hover {
+  /* putting in !important so it overrides the theme's styling as it hovers the row also */
+  background-color: #efefef !important;
+}
