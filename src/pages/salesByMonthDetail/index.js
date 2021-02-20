@@ -82,7 +82,7 @@ const SalesByMonthDetail = (props) => {
         <Col md={12} className="chartWrapper">
           <Row>
             {salesDetail && salesDetail.length ?
-              <Col md={12} className="ag-theme-alpine" style={{height: 300}}>
+              <Col md={12} className="ag-theme-alpine" style={{height: 400}}>
                 <h5 className="text-center">{currentYear} Sales by Month</h5>
                 <AgGridReact
                   onGridReady={onGridReady}
@@ -90,10 +90,11 @@ const SalesByMonthDetail = (props) => {
                   rowData={salesDetail}
                   defaultColDef={defaultColDef}
                   >
-                  <AgGridColumn field="SALES_GROUP" headerName="Group"></AgGridColumn>
+                  <AgGridColumn field="SALES_GROUP" headerName="Group" pinned></AgGridColumn>
                 {uppercaseMonths.map(month =>
                   <AgGridColumn
                     field={month}
+                    width={120}
                     headerName={capitalizeFirstLetter(month)}
                     valueFormatter={item => formatAsDollar(item.value || 0)}
                   />
